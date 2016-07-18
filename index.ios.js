@@ -11,12 +11,13 @@ import {
   Text,
   View
 } from 'react-native';
+import Main from './dom/main';
 
-import Main from './midas/main';
-class Project extends Component {
+class ReactNativeDemo extends Component {
   render() {
     return (
-           		<Main />
+      <Main />
+
     );
   }
 }
@@ -40,4 +41,4 @@ const styles = StyleSheet.create({
   },
 });
 
-AppRegistry.registerComponent('Project', () => Project);
+AppRegistry.registerComponent('ReactNativeDemo', () => ReactNativeDemo);
