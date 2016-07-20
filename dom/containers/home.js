@@ -118,7 +118,7 @@ class HomePage extends Component {
       initialRoute= {defaultRoute}
       configureScene= {(route) => Navigator.SceneConfigs.PushFromRight}
       renderScene= {this._renderScene}
-      // sceneStyle={{paddingTop: (Platform.OS === 'android' ? 64 : 44)}}
+      sceneStyle={{paddingTop: (Platform.OS === 'android' ? 64 : 44)}}
       navigationBar =
         // { <CommonNavigationBar />}
         {this._renderNavBar()}

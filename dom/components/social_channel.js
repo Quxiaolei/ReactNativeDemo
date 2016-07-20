@@ -47,7 +47,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',//主轴元素对齐方式
     alignItems: 'center',//交叉轴元素对齐方式
     backgroundColor: '#FFF8DC',
-    marginTop:(Platform.OS === 'android' ? 56 : 64),
+    marginTop:(Platform.OS === 'android' ? 0 : 20),
     width: Dimensions.get('window').width,
 	  // height:40,
   },

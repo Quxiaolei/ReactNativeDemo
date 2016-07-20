@@ -10,35 +10,14 @@ import {
   Platform,
 } from 'react-native';
 
-import HomePageList from '../components/social_list'
-import SocialDetailView from '../components/social_detail'
-
-
-// const defaultRoute = {
-//   component:HomePageList
-// };
-
+// import HomePageList from '../components/social_list'
+// import SocialDetailView from '../components/social_detail'
 
 module.exports = React.createClass({
-
-
-// class CommonNavigator extends Component {
-
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //     dataSource: new ListView.DataSource({
-  //       rowHasChanged: (row1, row2) => row1 !== row2
-  //     })
-  //   };
-  // }
-
-  // let component = this.props.component;
-
   _renderScene(route, navigator) {
     let Component = route.component;
     return (
-      <Component {...route.params} navigator={navigator} />
+      <Component route={route} {...route.params} navigator={navigator} />
     );
   },
 
@@ -128,15 +107,11 @@ module.exports = React.createClass({
     return (
       <Navigator
       initialRoute={{name: '', component: this.props.component, index:0}}
-      // configureScene= {(route) => Navigator.SceneConfigs.FloatFromBottom}
-      // HorizontalSwipeJump
+      configureScene= {(route) => Navigator.SceneConfigs.FloatFromBottom}
       renderScene= {this._renderScene}
       sceneStyle={{paddingTop: (Platform.OS === 'android' ? 64 : 44)}}
       navigationBar ={this._renderNavBar()}
       />
     );
   }
-
 });
-
-// module.exports = CommonNavigator;

@@ -1,3 +1,6 @@
+/**
+ * 圈子主界面的列表
+ */
 'use strict';
 import React, { Component } from 'react';
 import {
@@ -9,39 +12,57 @@ import {
   ListView,
   TouchableHighlight,
   Alert,
+  RefreshControl,
 } from 'react-native';
 
 import SocialChannel from './social_channel'
 import SocialListView from './social_list_listView'
 import SocialListViewCell from './social_list_listViewCell'
 import SocialDetailView from './social_detail'
-
-var FAKE_BOOK_DATA1 = [
-    {volumeInfo: {title: 'The Catcher in the Rye1', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher in the Rye2', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher in 33333333', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher ine444444442', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher in ye55555555555', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher in t666666666', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher in 77777777', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher in 8888888888', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher in 99999', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}
-,{volumeInfo: {title: 'The Catcher in 10000', authors: "J. D. Salinger", imageLinks: {thumbnail: 'https://ss2.bdstatic.com/70cFvnSh_Q1YnxGkpoWK1HF6hhy/it/u=1506930986,2736628476&fm=21&gp=0.jpg'}}}];
+import Util from '../containers/util'
+import ServiceURL from '../containers/service'
 
 class SocialPageList extends Component {
+  statics: {
+    title: '<RefreshControl>',
+    description: 'Adds pull-to-refresh support to a scrollview.'
+  }
   constructor(props) {
     super(props);
     this.state = {
+      isRefreshing: false,
+      loaded: 1,
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
-      })
+      }),
     };
   }
   componentDidMount() {
-    var books = FAKE_BOOK_DATA1;
-    this.setState({
-        dataSource: this.state.dataSource.cloneWithRows(books)
-    });
+    this._onRefresh();
+  }
+  _onRefresh() {
+    let baseURL = ServiceURL.book_search + '?count=' + this.state.loaded+'&q=c';
+    // let baseURL = "https://api.douban.com/v2/book/search?count=10&q=react-native";
+    // let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    let that = this;
+    this.setState({isRefreshing: true});
+     setTimeout(() => {
+       Util.get(baseURL, function(data){
+         console.log(data.books);
+         if(!data.books || !data.books.length){
+           return alert('图书服务出错');
+         }
+         let books = data.books;
+         that.setState({
+           isRefreshing: false,
+           loaded: that.state.loaded + 1,
+           dataSource: that.state.dataSource.cloneWithRows(books),
+         });
+         console.log(that.state.loaded);
+       }, function(err){
+         alert(err);
+       });
+     },10);
    }
    _renderNews(book) {
      return (
@@ -58,12 +79,17 @@ class SocialPageList extends Component {
          <View>
           <View style = {styles.cellContainer}>
             <View style = {{margin:10}}>
-              <Image source={{uri: book.volumeInfo.imageLinks.thumbnail}}
+              <Image source={{uri: book.image}}
                     style={styles.thumbnail} />
             </View>
             <View style = {{marginTop:10,marginRight:10}}>
-            <Text style={styles.title}>{book.volumeInfo.title}</Text>
-            <Text style={styles.author}>{book.volumeInfo.authors}</Text>
+              <Text style={styles.title}>{'书名:'+book.title}</Text>
+              <Text style={[styles.author,{marginTop:8}]}>{'作者:'+book.author}</Text>
+              <View style = {{flexDirection: 'row',flexWrap:'nowrap',marginTop:15,}}>
+                <Text style={{marginRight:10}}>{''+book.publisher}</Text>
+                <Text style={{marginRight:10}}>{''+book.pubdate}</Text>
+                <Text style={{}}>{''+book.price}</Text>
+              </View>
             </View>
             </View>
          <View style={styles.separator} />
@@ -72,10 +98,10 @@ class SocialPageList extends Component {
      );
    }
    _showNewsDetail(book) {
-     console.log("点击了cell,",book.volumeInfo.title,book.volumeInfo.authors);
+     console.log("点击了cell,",book.title,book.author);
      this.props.navigator.push({
        component: SocialDetailView,
-       title: book.volumeInfo.title,
+       title: book.title,
        rightButtonTitle: 'pop',
        onRightButtonPress: () => this.props.navigator.pop(),
        passProps: {book}
@@ -83,15 +109,17 @@ class SocialPageList extends Component {
    }
 
    _pop(book) {
-     console.log("点击了cell,",book.volumeInfo.title,book.volumeInfo.authors);
+     console.log("点击了cell,",book.title,book.author);
      this.props.navigator.pop({
        component: SocialDetailView,
-       title: book.volumeInfo.title,
+       title: book.title,
        passProps: {book}
      });
    }
 
 	render() {
+    let myDate = new Date();
+    let mytime = new Date().toLocaleTimeString();     //获取当前时间
 		return (
       <View style = {styles.container}>
       <SocialChannel style = {styles.channelViewStyle} />
@@ -99,6 +127,17 @@ class SocialPageList extends Component {
         style={styles.listViewStyle}
         dataSource={this.state.dataSource}
         renderRow={this._renderNews.bind(this)}
+        refreshControl={
+          // var a = "这里是JScript弹出来的:\nab"+"asdfasdf";
+          <RefreshControl refreshing={this.state.isRefreshing}
+                          onRefresh={this._onRefresh.bind(this)}
+                          tintColor="#ff0000"
+                          title= "Loading"
+                          titleColor="#00ff00"
+                          colors={['#ff0000', '#00ff00', '#0000ff']}
+                          progressBackgroundColor="#ffff00"
+          />
+        }
       />
       </View>
 		);
