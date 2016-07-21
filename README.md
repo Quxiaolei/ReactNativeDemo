@@ -9,7 +9,7 @@
 ####step 2:
 
 	npm install react-native-tab-navigator --save
-	
+	npm install react-native-scrollable-tab-view --save
 ####step 3:
 
 	npm start

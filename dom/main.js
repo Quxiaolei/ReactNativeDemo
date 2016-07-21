@@ -4,13 +4,10 @@ import TabNavigator from 'react-native-tab-navigator';
 import {
   AppRegistry,
   StyleSheet,
-  // TabBarIOS,
   Text,
   View,
   Image,
 } from 'react-native';
-
-// import CommonNavigator from './containers/commonNavigator';
 
 import HomePage from './containers/home';
 import WealthPage from './containers/wealth';
@@ -31,7 +28,7 @@ class MainPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedTab: 'redTab',
+      selectedTab: 'home',
       notifCount: 0,
       presses: 0,
     };
@@ -51,7 +48,7 @@ class MainPage extends Component {
               selectedTab: 'home',
             });
         }}>
-        <HomePage />
+        <HomePage/>
         </TabNavigator.Item>
 
         <TabNavigator.Item

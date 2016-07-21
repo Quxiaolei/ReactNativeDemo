@@ -3,6 +3,8 @@
  */
 'use strict';
 import React, { Component } from 'react';
+// FacebookTabBar
+import ScrollableTabView, { DefaultTabBar, ScrollableTabBar} from 'react-native-scrollable-tab-view';
 import {
   StyleSheet,
   View,
@@ -13,6 +15,9 @@ import {
   TouchableHighlight,
   Alert,
   RefreshControl,
+  RefreshLayoutConsts,
+  ScrollView,
+  Platform,
 } from 'react-native';
 
 import SocialChannel from './social_channel'
@@ -21,6 +26,21 @@ import SocialListViewCell from './social_list_listViewCell'
 import SocialDetailView from './social_detail'
 import Util from '../containers/util'
 import ServiceURL from '../containers/service'
+
+// //发现
+// class FindListView extends React.Component {
+//     render() {
+//         return (
+//         );
+//     }
+// }
+// //关注
+// class ConcernListView extends React.Component {
+//     render() {
+//         return (
+//         );
+//     }
+// }
 
 class SocialPageList extends Component {
   statics: {
@@ -32,6 +52,7 @@ class SocialPageList extends Component {
     this.state = {
       isRefreshing: false,
       loaded: 1,
+      channel:0,
       dataSource: new ListView.DataSource({
         rowHasChanged: (row1, row2) => row1 !== row2
       }),
@@ -40,15 +61,23 @@ class SocialPageList extends Component {
   componentDidMount() {
     this._onRefresh();
   }
-  _onRefresh() {
-    let baseURL = ServiceURL.book_search + '?count=' + this.state.loaded+'&q=c';
+  _onRefresh(channel) {
+    // console.log('channel:'+channel);
+    let that = this;
+    console.log('channel:'+that.state.channel);
+    let baseURL;
+    if (that.state.channel ==0) {
+      baseURL = ServiceURL.book_search + '?count=' + that.state.loaded+'&q=c';
+    }else {
+      baseURL = ServiceURL.book_search + '?count=' + that.state.loaded+'&q=react-native';
+    }
+    console.log(baseURL);
     // let baseURL = "https://api.douban.com/v2/book/search?count=10&q=react-native";
     // let ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    let that = this;
-    this.setState({isRefreshing: true});
+    that.setState({isRefreshing: true});
      setTimeout(() => {
        Util.get(baseURL, function(data){
-         console.log(data.books);
+        //  console.log(data.books);
          if(!data.books || !data.books.length){
            return alert('图书服务出错');
          }
@@ -58,7 +87,7 @@ class SocialPageList extends Component {
            loaded: that.state.loaded + 1,
            dataSource: that.state.dataSource.cloneWithRows(books),
          });
-         console.log(that.state.loaded);
+         console.log('当前已加载页数:'+that.state.loaded);
        }, function(err){
          alert(err);
        });
@@ -120,10 +149,29 @@ class SocialPageList extends Component {
 	render() {
     let myDate = new Date();
     let mytime = new Date().toLocaleTimeString();     //获取当前时间
-		return (
-      <View style = {styles.container}>
-      <SocialChannel style = {styles.channelViewStyle} />
+    let that = this;
+    return(
+      <ScrollableTabView
+      style={{marginTop: (Platform.OS === 'android' ? -10 : 10), }}
+      initialPage={0}
+      renderTabBar={() => <DefaultTabBar />}
+      // onScroll=  {() => {console.log('正在滑动中');}}
+      onChangeTab =
+      // {this._onRefresh.bind(this)}
+      {() => {
+        console.log('在改变前的tab:'+this.state.channel);
+        this.state.channel += 1;
+        this.state.channel = this.state.channel%2;
+        console.log('在改变后的tab:'+this.state.channel);
+        //bind返回一个function函数
+        //lambda生成的匿名函数中的this是lambda创建时的this,不是执行时的this
+        //不传递this时,默认会传递一个this
+        this._onRefresh.bind(this,this.state.channel)();
+        // this:_onRefresh(this);
+      }}
+      >
       <ListView
+        tabLabel="发现"
         style={styles.listViewStyle}
         dataSource={this.state.dataSource}
         renderRow={this._renderNews.bind(this)}
@@ -132,15 +180,56 @@ class SocialPageList extends Component {
           <RefreshControl refreshing={this.state.isRefreshing}
                           onRefresh={this._onRefresh.bind(this)}
                           tintColor="#ff0000"
-                          title= "Loading"
+                          title= "下拉即可刷新..."
                           titleColor="#00ff00"
                           colors={['#ff0000', '#00ff00', '#0000ff']}
                           progressBackgroundColor="#ffff00"
+                          // size = {RefreshLayoutConsts.SIZE.DEFAULT, RefreshLayoutConsts.SIZE.LARGE}
           />
         }
       />
-      </View>
-		);
+      <ListView
+        tabLabel="关注"
+        style={styles.listViewStyle}
+        dataSource={this.state.dataSource}
+        renderRow={this._renderNews.bind(this)}
+        refreshControl={
+          // var a = "这里是JScript弹出来的:\nab"+"asdfasdf";
+          <RefreshControl refreshing={this.state.isRefreshing}
+                          onRefresh={this._onRefresh.bind(this)}
+                          tintColor="#ff0000"
+                          title= "下拉即可刷新..."
+                          titleColor="#00ff00"
+                          colors={['#ff0000', '#00ff00', '#0000ff']}
+                          progressBackgroundColor="#ffff00"
+                          // size = {RefreshLayoutConsts.SIZE.DEFAULT, RefreshLayoutConsts.SIZE.LARGE}
+          />
+        }
+      />
+      </ScrollableTabView>
+    );
+		// return (
+    //   <View style = {styles.container}>
+    //   <SocialChannel style = {styles.channelViewStyle} />
+      // <ListView
+      //   style={styles.listViewStyle}
+      //   dataSource={this.state.dataSource}
+      //   renderRow={this._renderNews.bind(this)}
+      //   refreshControl={
+      //     // var a = "这里是JScript弹出来的:\nab"+"asdfasdf";
+      //     <RefreshControl refreshing={this.state.isRefreshing}
+      //                     onRefresh={this._onRefresh.bind(this)}
+      //                     tintColor="#ff0000"
+      //                     title= "下拉即可刷新..."
+      //                     titleColor="#00ff00"
+      //                     colors={['#ff0000', '#00ff00', '#0000ff']}
+      //                     progressBackgroundColor="#ffff00"
+      //                     // size = {RefreshLayoutConsts.SIZE.DEFAULT, RefreshLayoutConsts.SIZE.LARGE}
+      //     />
+      //   }
+      // />
+    //   </View>
+		// );
 	}
 }
 
@@ -200,6 +289,23 @@ var styles = StyleSheet.create({
     fontSize: 20,
     backgroundColor: 'white'
     },
+    tabView: {
+    flex: 1,
+    padding: 10,
+    backgroundColor: 'rgba(0,0,0,0.01)',
+  },
+  card: {
+    borderWidth: 1,
+    backgroundColor: '#fff',
+    borderColor: 'rgba(0,0,0,0.1)',
+    margin: 5,
+    height: 150,
+    padding: 15,
+    shadowColor: '#ccc',
+    shadowOffset: { width: 2, height: 2, },
+    shadowOpacity: 0.5,
+    shadowRadius: 3,
+},
 });
 
 module.exports = SocialPageList;

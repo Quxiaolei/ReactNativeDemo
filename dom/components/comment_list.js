@@ -13,8 +13,7 @@ import {
   Dimensions,
   ListView,
   TouchableHighlight,
-  ToastAndroid,
-  Platform
+  ToastAndroid
 } from 'react-native';
 
 export default class SocialCommentList extends Component {
@@ -99,7 +98,7 @@ var THUMB_URLS = [
     require('../images/iconlogo.png'),
     require('../images/iconlogo.png'),
   ];
-var LOREM_IPSUM = '我是一个cell！';
+var LOREM_IPSUM = '我是一个SB！';
 
 /* eslint no-bitwise: 0 */
 var hashCode = function(str) {
@@ -114,9 +113,6 @@ var styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FDF5E6',
-  },
-  listView:{
-    marginTop:(Platform.OS === 'android' ? 0 : 20),
   },
   row: {
     flexDirection: 'row',
