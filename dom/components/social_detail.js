@@ -22,7 +22,7 @@ import {
 
 import SocialCommentList from './comment_list';
 
-const AYTHOR = '这里有个SB';
+const AYTHOR = '这就是详情页';
 const TITLE = '快来看快来看';
 const TIME = '11:29';
 const CONTENT = '【环球时报综合报道】美国佛罗里达州迪士尼乐园的一名实习生，因为在社交媒体揭露迪士尼隐瞒鳄鱼消息的政策而遭解雇。如今这名实习生又重新上岗。据英国《卫报》17日报道，自上月迪士尼发生鳄鱼咬死男童事件后，有关鳄鱼的各种消息都令迪士尼紧张万分。一名叫香农·苏利文的实习生近日爆料称，她在迪士尼员工休息室内看到一张通告。上面写道：“如有游客询问周边水域是否有鳄鱼时，正确的答案应该是：‘据我们所知没有，但如果我们看到鳄鱼，我们会打电话给有关当局来移除鳄鱼。’”通告还特别提醒新雇员，不要说“我们之前看到过鳄鱼。”苏利文将通告拍下来并上传到社交网站。而迪士尼也立即移除这张通告。但苏利文因此事被开除。此事被媒体曝光后，迪士尼高层15日亲自拜访苏利文，邀请她回到迪士尼工作。据悉，苏利文将继续工作至实习期结束时。';
@@ -208,7 +208,7 @@ var THUMB_URLS = [
     require('../images/iconlogo.png'),
     require('../images/iconlogo.png'),
   ];
-var LOREM_IPSUM = '我是一个SB！';
+var LOREM_IPSUM = '我是一个cell！';
 
 /* eslint no-bitwise: 0 */
 var hashCode = function(str) {
