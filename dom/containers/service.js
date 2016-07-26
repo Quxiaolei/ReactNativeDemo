@@ -16,6 +16,8 @@ module.exports = {
   //电影搜索
   movie_search: 'https://api.douban.com/v2/movie/search',
   //电影详情
-  movie_search_id: 'https://api.douban.com/v2/movie/subject/'
+  movie_search_id: 'https://api.douban.com/v2/movie/subject/',
+  //网易财经新闻列表,0-10中,0为页数,10为一页显示个数
+  //http://c.m.163.com/nc/article/list/T1348648756099/0-10.html
+  news:'http://c.m.163.com/nc/article/list/T1348648756099/'
 };
-

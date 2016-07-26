@@ -2,14 +2,24 @@
 
 ####step 1:
 
-	npm install -g cnpm --registry=http://registry.npm.taobao.org
-	
-	npm install
+```js
+npm install -g cnpm --registry=http://registry.npm.taobao.org
+```
+
+```js
+npm install
+```
 	
 ####step 2:
+```js
+npm install react-native-tab-navigator --save
+```
 
-	npm install react-native-tab-navigator --save
-	npm install react-native-scrollable-tab-view --save
+```js
+npm install react-native-scrollable-tab-view --save
+```
+
 ####step 3:
-
-	npm start
+```js
+npm start
+```
